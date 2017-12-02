@@ -14,27 +14,6 @@ void clist_init(CList *list, void (*destroy)(void *data))
 }
 
 
-void clist_destroy(CList *list) 
-{
-   void *data;
-
-   while (clist_size(list) > 0) {
-      
-      if (clist_rem_next(list, list->head, (void **)&data) == 0 && list->destroy
-         != NULL) {
-         
-         // Call a user-defined function to free dynamically allocated data.    *
-         list->destroy(data);
-      }
-   }
-
-   // No operations are allowed now, but clear the structure as a precaution.
-   memset(list, 0, sizeof(CList));
-
-   return;
-}
-
-
 int clist_ins_next(CList *list, CListElmt *element, const void *data) 
 {
    CListElmt *new_element;
@@ -88,4 +67,29 @@ int clist_rem_next(CList *list, CListElmt *element, void **data) {
    list->size--;
 
    return 0;
+}
+
+
+void clist_destroy(CList *list) 
+{
+   void *data;
+
+   while (clist_size(list) > 0) {
+      
+      // Why are we casting here, isn't data undefined/uninitialized?
+      // couldn't we just define void **data instead of void *data above?
+      // and pass it as data instead of casting the memory address of a pointer
+      // to dobule pointer to void?
+      if (clist_rem_next(list, list->head, (void **)&data) == 0 && list->destroy
+         != NULL) {
+         
+         // Call a user-defined function to free dynamically allocated data.    *
+         list->destroy(data);
+      }
+   }
+
+   // No operations are allowed now, but clear the structure as a precaution.
+   memset(list, 0, sizeof(CList));
+
+   return;
 }
