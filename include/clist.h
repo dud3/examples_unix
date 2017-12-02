@@ -1,49 +1,23 @@
-/*****************************************************************************
-*                                                                            *
-*  ------------------------------- clist.h --------------------------------  *
-*                                                                            *
-*****************************************************************************/
-
 #ifndef CLIST_H
 #define CLIST_H
 
 #include <stdlib.h>
 
-/*****************************************************************************
-*                                                                            *
-*  Define a structure for circular list elements.                            *
-*                                                                            *
-*****************************************************************************/
+// Define a structure for circular list elements.                            *
 
 typedef struct CListElmt_ {
-
-void               *data;
-struct CListElmt_  *next;
-
+    void               *data;
+    struct CListElmt_  *next;
 } CListElmt;
 
-/*****************************************************************************
-*                                                                            *
-*  Define a structure for circular lists.                                    *
-*                                                                            *
-*****************************************************************************/
-
 typedef struct CList_ {
+    int                size;
 
-int                size;
+    int                (*match)(const void *key1, const void *key2);
+    void               (*destroy)(void *data);
 
-int                (*match)(const void *key1, const void *key2);
-void               (*destroy)(void *data);
-
-CListElmt          *head;
-
+    CListElmt          *head;
 } CList;
-
-/*****************************************************************************
-*                                                                            *
-*  --------------------------- Public Interface ---------------------------  *
-*                                                                            *
-*****************************************************************************/
 
 void clist_init(CList *list, void (*destroy)(void *data));
 
